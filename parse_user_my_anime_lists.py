@@ -63,8 +63,6 @@ def add_features_to_user_shows(user_shows):
         show["num_episodes"] = data["num_episodes"]
         show["studio"] = data["studios"][0]["name"]
 
-        print(show, "\n", "\n")
-
     return user_shows
 
 
