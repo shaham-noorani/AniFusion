@@ -30,9 +30,8 @@ def parse_xml(xml_data):
         show_info = {
             "animedb_id": int(anime_elem.find("series_animedb_id").text),
             "title": anime_elem.find("series_title").text.strip('"'),
-            "series_type": anime_elem.find("series_type").text.lower(),
             "my_score": int(anime_elem.find("my_score").text),
-            "status": anime_elem.find("my_status").text.lower(),
+            "series_type": anime_elem.find("series_type").text.lower(),
         }
         user_shows.append(show_info)
 
