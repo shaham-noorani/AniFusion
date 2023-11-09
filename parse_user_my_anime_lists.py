@@ -1,22 +1,23 @@
 import os
-
 from dotenv import load_dotenv
+import requests
+import xml.etree.ElementTree as ET
 
 load_dotenv()
 
-print(os.getenv("MAL_CLIENT_ID"))
+XML_FILE_PATH = "data/ShahamMyAnimeList.xml"
+BASE_URL = "https://api.myanimelist.net/v2/anime/"
+FIELDS = "start_date,mean,popularity,genres,num_episodes,studios"
+HEADERS = {"X-MAL-CLIENT-ID": os.getenv("MAL_CLIENT_ID")}
 
-import requests
 
-import xml.etree.ElementTree as ET
-
-def read_xml_file(file_path):
+# get the data from the xml file
+def get_data_from_xml(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         return file.read()
 
-# Replace 'your_xml_file.xml' with the actual file name
-xml_file_path = 'data/ShahamMyAnimeList.xml'
 
+# parse the xml data to get the user shows
 def parse_xml(xml_data):
     # Parse the XML data
     root = ET.fromstring(xml_data)
@@ -28,7 +29,7 @@ def parse_xml(xml_data):
     for anime_elem in root.findall(".//anime"):
         show_info = {
             "animedb_id": int(anime_elem.find("series_animedb_id").text),
-            "title": anime_elem.find("series_title").text.strip('\"'),
+            "title": anime_elem.find("series_title").text.strip('"'),
             "series_type": anime_elem.find("series_type").text.lower(),
             "my_score": int(anime_elem.find("my_score").text),
             "status": anime_elem.find("my_status").text.lower(),
@@ -37,33 +38,35 @@ def parse_xml(xml_data):
 
     return user_shows
 
-# Check if the file exists
-if os.path.exists(xml_file_path):
-    xml_data = read_xml_file(xml_file_path)
-    user_shows_result = parse_xml(xml_data)
-    print("user_shows =", user_shows_result)
+
+if os.path.exists(XML_FILE_PATH):
+    xml_data = get_data_from_xml(XML_FILE_PATH)
+    user_shows = parse_xml(xml_data)
 else:
-    print(f"The file {xml_file_path} does not exist.")
-
-
-# # get the raw data from the xmls
-# user_shows = [
-#     {
-#         animedb_id: 12124321,
-#         title: "sd",
-#         series_type: "tv",
-#         my_score: 8,
-#         status: "completed",
-#     }
-# ]
-
+    print(f"The file {XML_FILE_PATH} does not exist.")
 
 
 # augment with api data
-url = "https://api.myanimelist.net/v2/anime/52034?fields=genres"
-payload = {}
-headers = {"X-MAL-CLIENT-ID": os.getenv("MAL_CLIENT_ID")}
-response = requests.request("GET", url, headers=headers, data=payload)
-print(response.text)
+def add_features_to_user_shows(user_shows):
+    for show in user_shows:
+        id = show["animedb_id"]
+        url = BASE_URL + str(id) + "?fields=" + FIELDS
+        response = requests.request("GET", url, headers=HEADERS)
+        data = response.json()
+
+        show["airing_date"] = data["start_date"]
+        show["mean_rating"] = data["mean"]
+        show["popularity_rank"] = data["popularity"]
+        show["main_genre"] = data["genres"][0]["name"]
+        if len(data["genres"]) > 1:
+            show["secondary_genre"] = data["genres"][1]["name"]
+        show["num_episodes"] = data["num_episodes"]
+        show["studio"] = data["studios"][0]["name"]
+
+        print(show, "\n", "\n")
+
+    return user_shows
+
 
 # return that data
+print(add_features_to_user_shows(user_shows))
