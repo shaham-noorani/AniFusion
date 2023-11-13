@@ -5,7 +5,6 @@ import xml.etree.ElementTree as ET
 
 load_dotenv()
 
-XML_FILE_PATH = "data/ShahamMyAnimeList.xml"
 BASE_URL = "https://api.myanimelist.net/v2/anime/"
 FIELDS = "start_date,mean,popularity,genres,num_episodes,studios"
 HEADERS = {"X-MAL-CLIENT-ID": os.getenv("MAL_CLIENT_ID")}
@@ -43,13 +42,6 @@ def parse_xml(xml_data):
     return user_shows
 
 
-if os.path.exists(XML_FILE_PATH):
-    xml_data = get_data_from_xml(XML_FILE_PATH)
-    user_shows = parse_xml(xml_data)
-else:
-    print(f"The file {XML_FILE_PATH} does not exist.")
-
-
 # augment with api data
 def add_features_to_user_shows(user_shows):
     for show in user_shows:
@@ -68,5 +60,9 @@ def add_features_to_user_shows(user_shows):
     return user_shows
 
 
-# return that data
-print(add_features_to_user_shows(user_shows))
+def parse_user_my_anime_lists(file_path):
+    xml_data = get_data_from_xml(file_path)
+    user_shows = parse_xml(xml_data)
+    user_shows = add_features_to_user_shows(user_shows)
+
+    return user_shows

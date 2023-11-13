@@ -9,14 +9,22 @@ load_dotenv()
 
 def chatgpt_reccomendation(reccomendation_set):
     # Load the top 500 anime from the CSV file
+    # Title,Rank,Mean Score,Genres,Number of Episodes,Media Type,Studios,Start Date
     top_anime_names_genres = []
     top_anime_scores = {}
     with open("data/top_500_anime.csv", "r") as f:
         reader = csv.reader(f)
         reader.__next__()
         for row in reader:
-            top_anime_names_genres.append(f"{row[0]} - {row[2]}/{row[3]}")
-            top_anime_scores[row[0]] = row[1]
+            # genres looks like this "[{'id': 1, 'name': 'Action'}, {'id': 27, 'name': 'Shounen'}, ...]"
+            main_genre = (
+                row[3].split(",")[0].split(":")[1].strip("'").strip("[").strip("'")
+            )
+            second_genre = (
+                row[3].split(",")[1].split(":")[1].strip("'").strip("]").strip("'")
+            )
+            top_anime_names_genres.append(f"{row[0]} - {main_genre}/{second_genre}")
+            top_anime_scores[row[0]] = row[2]
 
     # Use the Chat GPT API to generate recommendations based on the input anime
     openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -47,14 +55,5 @@ def chatgpt_reccomendation(reccomendation_set):
 
     # sort recomedations by score and get the top 5
     recommendations.sort(key=lambda x: top_anime_scores[x], reverse=True)
-    print(recommendations[:5])
 
     return recommendations[:5]
-
-
-chatgpt_reccomendation(
-    [
-        "Naruto - Action/Adventure",
-        "One Punch Man - Action/Comedy",
-    ]
-)
