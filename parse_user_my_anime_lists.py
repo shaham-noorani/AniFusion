@@ -26,6 +26,7 @@ def parse_xml(xml_data):
     user_shows = []
 
     # Iterate through each 'anime' element
+    count = 10
     for anime_elem in root.findall(".//anime"):
         show_info = {
             "animedb_id": int(anime_elem.find("series_animedb_id").text),
@@ -34,6 +35,10 @@ def parse_xml(xml_data):
             "series_type": anime_elem.find("series_type").text.lower(),
         }
         user_shows.append(show_info)
+        count += 1
+
+        if count == 10:
+            break
 
     return user_shows
 
@@ -56,9 +61,7 @@ def add_features_to_user_shows(user_shows):
         show["airing_date"] = data["start_date"]
         show["mean_rating"] = data["mean"]
         show["popularity_rank"] = data["popularity"]
-        show["main_genre"] = data["genres"][0]["name"]
-        if len(data["genres"]) > 1:
-            show["secondary_genre"] = data["genres"][1]["name"]
+        show["genre"] = data["genres"][0]["name"]
         show["num_episodes"] = data["num_episodes"]
         show["studio"] = data["studios"][0]["name"]
 
