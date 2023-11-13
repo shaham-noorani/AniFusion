@@ -65,7 +65,7 @@ def recommend_anime_to_user1(user1_animes, user2_animes, similarity_matrix):
         return None, 0
 
 # Get a recommendation for user1
-recommended_anime, score = recommend_anime_to_user1(user1_animes, user2_animes, similarity_matrix)
+recommended_anime, score = recommend_anime_to_user1(user_shows_1, user_shows_2, similarity_matrix)
 if recommended_anime:
     print(f"Recommended Anime for User 1: {recommended_anime} with predicted score {score:.2f}")
 else:
