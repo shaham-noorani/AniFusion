@@ -1,3 +1,5 @@
+import csv
+import json
 import os
 from dotenv import load_dotenv
 import requests
@@ -60,9 +62,15 @@ def add_features_to_user_shows(user_shows):
     return user_shows
 
 
-def parse_user_my_anime_lists(file_path):
+def save_data_to_json(user_shows, user_name):
+    with open(f"data/{user_name}sAnimeList.json", "w") as f:
+        json.dump(user_shows, f)
+
+
+def parse_user_my_anime_lists(file_path, user_name):
     xml_data = get_data_from_xml(file_path)
     user_shows = parse_xml(xml_data)
     user_shows = add_features_to_user_shows(user_shows)
+    save_data_to_json(user_shows, user_name)
 
     return user_shows

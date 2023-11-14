@@ -34,37 +34,37 @@ def get_similarity_matrix(user_shows_1, user_shows_2):
 def recommend_anime_to_user(user1_animes, user2_animes, similarity_matrix):
     user1_titles = [anime["title"] for anime in user1_animes]
     user1_ratings = {anime["title"]: anime["my_score"] for anime in user1_animes}
-    user2_titles = [anime["title"] for anime in user2_animes]
 
     # Dictionary to store the weighted similarity sum for each anime not watched by user 1
     weighted_scores = {}
 
     # Go through each anime watched by user 2
     for i, anime2 in enumerate(user2_animes):
-        if (
-            anime2["title"] not in user1_titles
-        ):  # Only consider animes not watched by user 1
+        if anime2["title"] not in user1_titles:
             weighted_sum = 0
             normalizing_sum = 0
+
             # Compare with all animes watched by user 1
             for j, anime1 in enumerate(user1_animes):
-                # Weight by the rating user 1 gave this anime
                 similarity = similarity_matrix[i + len(user1_animes), j]
                 weighted_sum += similarity * user1_ratings[anime1["title"]]
                 normalizing_sum += similarity
-            # Avoid division by zero
+
             if normalizing_sum > 0:
                 weighted_scores[anime2["title"]] = weighted_sum / normalizing_sum
 
-    # Now recommend the anime with the highest weighted similarity score
+    # Now recommend the anime with the highest 5 highest weighted scores
     if weighted_scores:
-        recommended_title = max(weighted_scores, key=weighted_scores.get)
-        return recommended_title, weighted_scores[recommended_title]
+        sorted_animes = sorted(
+            weighted_scores.items(), key=lambda x: x[1], reverse=True
+        )
+
+        return [anime[0] for anime in sorted_animes[:5]], sorted_animes[:5]
     else:
         return None, 0
 
 
-# Get a recommendation for user1
+# Get a recommendation for both users
 def generate_reccomendations(user_shows_1, user_shows_2, similarity_matrix):
     user1_recommended_anime, user1_scores = recommend_anime_to_user(
         user_shows_1, user_shows_2, similarity_matrix
