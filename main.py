@@ -170,10 +170,14 @@ similarity_matrix = get_similarity_matrix(user1_anime, user2_anime)
     user2_scores,
 ) = generate_reccomendations(user1_anime, user2_anime, similarity_matrix)
 
+print(user1_reccomendations)
+print(chatgpt_reccomendation(user1_reccomendations, user1_anime))
 # enhance recommendations with chat gpt
 user1_final_reccomendations = user1_reccomendations + chatgpt_reccomendation(
     user1_reccomendations, user1_anime
 )
+print(user2_reccomendations)
+print(chatgpt_reccomendation(user2_reccomendations, user2_anime))
 
 user2_final_reccomendations = user2_reccomendations + chatgpt_reccomendation(
     user2_reccomendations, user2_anime
@@ -181,5 +185,7 @@ user2_final_reccomendations = user2_reccomendations + chatgpt_reccomendation(
 
 print()
 print(f"{user1}'s recommendations:\n{','.join(user1_final_reccomendations)}")
+# print(f"{user1}'s GPT recommendations:\n{','.join(user1_reccomendations)}")
 print()
 print(f"{user2}'s recommendations:\n{','.join(user2_final_reccomendations)}")
+# print(f"{user1}'s GPT recommendations:\n{','.join(user2_reccomendations)}")
