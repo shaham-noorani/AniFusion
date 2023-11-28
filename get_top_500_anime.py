@@ -56,6 +56,7 @@ def write_to_csv(anime_data, file_path="top_anime.csv"):
 
 def generate_top_500_anime_csv():
     top_500_anime = get_top_500_anime()
+    print(top_500_anime)    
     write_to_csv(top_500_anime)
     print("CSV file created successfully.")
 
