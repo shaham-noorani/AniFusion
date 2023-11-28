@@ -38,24 +38,28 @@ def remove_seen_anime(reccomendation_set, watched_set):
     watched_set = [anime["title"] for anime in watched_set]
 
     messages = [
-        "I'm going to give you a list of all the anime I've seen:",
+        "Here is list A of anime:",
         watched_set.__str__(),
-        "I'm also going to give you a list of reccomendations based on the anime I've seen:",
+        "Here is list B of anime:",
         reccomendation_set.__str__(),
-        "\nPlease remove any anime that I've seen from the list of reccomendations.",
+        "\nList C is the list of anime in list B that are not in list A. Please provide list C.",
     ]
 
     prompt = [
         {
             "role": "system",
             "content": "Only respond in titles of anime and as a comma seperated list.",
-        }
+        },
+        {
+            "role": "system",
+            "content": "Treat the japanese and english titles as the same. For example, 'Boku no Hero Academia' and 'My Hero Academia' are the same anime.",
+        },
     ]
     for message in messages:
         prompt.append({"role": "user", "content": message})
 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-1106",
+        model="gpt-4-1106-preview",
         messages=prompt,
         temperature=0,
         max_tokens=1000,
@@ -66,7 +70,7 @@ def remove_seen_anime(reccomendation_set, watched_set):
 
     # parse the response and trim whitespace
     recommendations = response.choices[0].message.content.split(",")
-    recommendations = [r.strip().strip("'") for r in recommendations]
+    recommendations = [r.strip().strip("'").strip('"') for r in recommendations]
 
     return recommendations
 
