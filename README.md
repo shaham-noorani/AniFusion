@@ -8,6 +8,13 @@ Install the python dependencies:
 pip install -r requirements.txt
 ```
 
+Add a .env file with the following variables:
+
+```bash
+OPENAI_API_KEY=
+MAL_CLIENT_ID=
+```
+
 ## Usage
 
 ```bash
