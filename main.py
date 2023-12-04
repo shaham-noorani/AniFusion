@@ -18,9 +18,9 @@ if not os.path.exists("data/top_500_anime.csv"):
 
 
 def cross_reccomend():
-    # parse two users' anime lists based on input (1 = Shaham, 2 = Kethan, 3 = Ryan)
+    # parse two users' anime lists based on input (1 = Shaham, 2 = Kethan, 3 = Ryan, 4 = Maharshi)
     user1 = input(
-        "Enter the number of the first user (1 = Shaham, 2 = Kethan, 3 = Ryan): "
+        "Enter the number of the first user (1 = Shaham, 2 = Kethan, 3 = Ryan, 4 = Maharshi): "
     )
     user2 = input("Enter the number of the second user: ")
 
@@ -68,9 +68,9 @@ def cross_reccomend():
 
 def single_reccomend():
     user = input(
-        "Enter the number of the first user (1 = Shaham, 2 = Kethan, 3 = Ryan): "
+        "Enter the number of the first user (1 = Shaham, 2 = Kethan, 3 = Ryan, 4 = Maharshi): "
     )
-    user = "Shaham" if user == "1" else "Kethan" if user == "2" else "Ryan"
+    user = "Shaham" if user == "1" else "Kethan" if user == "2" else "Ryan" if user == "3" else "Maharshi"
 
     recommendation_system = SingleUserAnimeRecommendation(user)
     recommendations = recommendation_system.recommend_anime()
