@@ -24,9 +24,9 @@ def cross_reccomend():
     )
     user2 = input("Enter the number of the second user: ")
 
-    # convert 1 to Shaham, 2 to Kethan, 3 to Ryan
-    user1 = "Shaham" if user1 == "1" else "Kethan" if user1 == "2" else "Ryan"
-    user2 = "Shaham" if user2 == "1" else "Kethan" if user2 == "2" else "Ryan"
+    # convert 1 to Shaham, 2 to Kethan, 3 to Ryan, 4 to Maharshi
+    user1 = "Shaham" if user1 == "1" else "Kethan" if user1 == "2" else "Ryan" if user1 == "3" else "Maharshi"
+    user2 = "Shaham" if user2 == "1" else "Kethan" if user2 == "2" else "Ryan" if user2 == "3" else "Maharshi"
 
     # if the data isn't saved to JSON, get the data from the xml file
     if not os.path.exists(f"data/{user1}sAnimeList.json"):

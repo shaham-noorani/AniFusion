@@ -1,10 +1,14 @@
-import openai
+from openai import OpenAI
 import csv
 import os
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY"),
+)
 
 
 def load_top_500_anime():
@@ -32,8 +36,6 @@ def load_top_500_anime():
 
 
 def remove_seen_anime(reccomendation_set, watched_set):
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-
     # from watched anime, onky keep the titles
     watched_set = [anime["title"] for anime in watched_set]
 
@@ -58,7 +60,7 @@ def remove_seen_anime(reccomendation_set, watched_set):
     for message in messages:
         prompt.append({"role": "user", "content": message})
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=prompt,
         temperature=0,
@@ -80,7 +82,6 @@ def chatgpt_reccomendation(reccomendation_set, user_anime):
     top_anime_names_genres = load_top_500_anime()
 
     # Use the Chat GPT API to generate recommendations based on the input anime
-    openai.api_key = os.getenv("OPENAI_API_KEY")
     messages = [
         "I'm going to give you a list of the top anime on MyAnimeList right now.",
         top_anime_names_genres.__str__(),
@@ -96,7 +97,7 @@ def chatgpt_reccomendation(reccomendation_set, user_anime):
     for message in messages:
         prompt.append({"role": "user", "content": message})
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo-1106",
         messages=prompt,
         temperature=0,
